@@ -1,151 +1,35 @@
 import numpy as np
 import random
+import re
+import os
 
 
 # path = "D:\Test_Projects\Word2Vec"
 
-# # Whitespace tokenization
 
-# def get_sentences():
-#     sentences = []
-#     with open(f"{path}/datasetest.txt", "r") as f:
-#         first = True
-#         for line in f:
-#             if first:
-#                 first = False
-#                 continue
-#             split = line.strip().split()[1:]
-#             sentences += [[w.lower() for w in split]]
-#     sent_lens = np.array([len(s) for s in sentences])
-#     cum_sent_lens = np.cumsum(sent_lens)
-#     return sentences, sent_lens, cum_sent_lens
+# def preparing_data(filename, path):
 
-
-# sentences, sent_lens, cum_sent_lens = get_sentences()
-
-# for sent in sentences[:3]:
-#     print(sent)
+#     temp_filename = filename + ".tmp"
+#     pattern = re.compile(r'[A-Za-z]+[\w^\']*|[\w^\']*[A-Za-z]+[\w^\']*')
     
-# # Collation
+#     with open(f"{path}/{filename}", "r", encoding="utf-8") as read_file, \
+#      open(f"{path}/{temp_filename}", "w", encoding="utf-8") as write_file:
 
-# def get_random_context(C=5):
-#     sent_id = random.randint(0, len(sentences) - 1)
-#     sent = sentences[sent_id]
-#     word_id = random.randint(0, len(sent) - 1)
+#         for line in read_file:
+#             modified_line = pattern.findall(line.lower())
+#             for i in modified_line:
+#                 write_file.write(i)
+#                 print(i)
 
-#     context = sent[max(0, word_id - C) : word_id]
-#     if word_id + 1 < len(sent):
-#         context += sent[word_id + 1 : min(len(sent), word_id + C + 1)]
+#     os.replace(temp_filename, filename)
+#     return "Done!"
 
-#     center = sent[word_id]
-#     context = [w for w in context if w != center]
+# path = "D:/Test_Projects/Word2Vec"
+# filename = "datasetest.txt"
+# preparing_data(filename, path)           
+            
 
-#     if len(context) > 0:
-#         return center, context
-#     else:
-#         return get_random_context(C)
-
-# center, context = get_random_context()
-
-# def get_tokens():
-#     tokens = {}
-#     tok_freq = {}
-#     word_count = 0
-#     rev_tokens = []
-#     idx = 0
-
-#     for sent in sentences:
-#         for w in sent:
-#             word_count += 1
-#             if w not in tokens:
-#                 tokens[w] = idx
-#                 rev_tokens += [w]
-#                 idx += 1
-#                 tok_freq[w] = 1
-#             else:
-#                 tok_freq[w] += 1
-
-#     tokens["UNK"] = idx
-#     rev_tokens += ["UNK"]
-#     tok_freq["UNK"] = 1
-#     word_count += 1
-#     return tokens, tok_freq, rev_tokens, word_count
-
-
-# tokens, tok_freq, rev_tokens, word_count = get_tokens()
-# len(tokens), len(tok_freq), len(rev_tokens), word_count
-
-# print("Center word: *", center, "* Center word token id: ", tokens[center])
-# for i in range(len(context)):
-#     print(
-#         "Context word: *", context[i], "* Context word token id: ", tokens[context[i]]
-#     )
-    
-# # the data came with some splits in our data
-# # we can apply them with this function
-# def dataset_split():
-#     split = [[] for _ in range(3)]
-#     with open(f"{path}/datasetest.txt", "r") as f:
-#         first = True
-#         for line in f:
-#             if first:
-#                 first = False
-#                 continue
-#             split = line.strip().split(",")
-#             split[int(split[1]) - 1] += [int(split[0]) - 1]
-#     return split
-
-
-# split = dataset_split()
-# len(split), len(split[0]), len(split[1]), len(split[2])
-
-# table_size = 1e8
-
-
-# def sampleTable():
-#     tokens_num = len(tokens)
-#     sampling_freq = np.zeros((tokens_num,))
-
-#     i = 0
-#     for w in range(tokens_num):
-#         w = rev_tokens[i]
-#         if w in tok_freq:
-#             freq = 1.0 * tok_freq[w]
-#             freq = freq**0.75
-#         else:
-#             freq = 0.0
-#         sampling_freq[i] = freq
-#         i += 1
-
-#     sampling_freq /= np.sum(sampling_freq)
-#     sampling_freq = np.cumsum(sampling_freq) * table_size
-
-#     sample_table = np.zeros((int(table_size),))
-
-#     j = 0
-#     for i in range(int(table_size)):
-#         while i > sampling_freq[j]:
-#             j += 1
-#         sample_table[i] = j
-
-#     return sample_table
-
-
-# sample_table = sampleTable()
-
-# def reject_prob():
-#     threshold = 1e-5 * word_count
-#     reject_prob = np.zeros((len(tokens),))
-#     for i in range(len(tokens)):
-#         w = rev_tokens[i]
-#         freq = 1.0 * tok_freq[w]
-#         reject_prob[i] = max(0, 1 - np.sqrt(threshold / freq))
-#     return reject_prob
-
-
-# reject_prob = reject_prob()
-
-class StanfordSentiment:
+class Newname:
     """
     Class for reading and loading Stanford Sentiment Treebank. We ignore the sentiment component of the treebank and extract just the text.
     """
@@ -162,6 +46,7 @@ class StanfordSentiment:
         self.get_all_sentences()
         self.dataset_split()
         self.sampleTable()
+        
 
     def get_tokens(self):
         if hasattr(self, "tokens") and self.tokens:
@@ -201,12 +86,8 @@ class StanfordSentiment:
 
         sentences = []
         with open(f"{self.path}/datasetest.txt", "r") as f:
-            first = True
             for line in f:
-                if first:
-                    first = False
-                    continue
-                split = line.strip().split()[1:]
+                split = line.strip().split()[0:]
                 sentences += [[w.lower() for w in split]]
         sent_lens = np.array([len(s) for s in sentences])
         cum_sent_lens = np.cumsum(sent_lens)
@@ -220,7 +101,7 @@ class StanfordSentiment:
         if hasattr(self, "reject_prob") and self.reject_prob:
             return self.reject_prob
 
-        threshold = 1e-5 * self.word_count
+        threshold = 1e-8 * self.word_count
         reject_prob = np.zeros((len(self.tokens),))
         n_tokens = len(self.tokens)
         for i in range(n_tokens):
@@ -274,11 +155,7 @@ class StanfordSentiment:
 
         split = [[] for _ in range(3)]
         with open(f"{self.path}/datasetSplit.txt", "r") as f:
-            first = True
             for line in f:
-                if first:
-                    first = False
-                    continue
                 split = line.strip().split(",")
                 split[int(split[1]) - 1] += [int(split[0]) - 1]
         self.split = split
@@ -337,9 +214,6 @@ class StanfordSentiment:
     def sampleTokenIdx(self):
         return self.sample_table[random.randint(0, self.table_size - 1)]
     
-dataset = StanfordSentiment()  # takes about 45sec
+dataset = Newname()  # takes about 45sec
 tokens = dataset.tokens
 num_words = len(tokens)
-# print(num_words)
-
-#jhrkhgldsjflk
