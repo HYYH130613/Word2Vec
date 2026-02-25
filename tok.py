@@ -1,4 +1,5 @@
 import numpy as np
+from dataset_word2vec import ds
 import random
 import re
 import os
@@ -27,24 +28,22 @@ import os
 # path = "D:/Test_Projects/Word2Vec"
 # filename = "datasetest.txt"
 # preparing_data(filename, path)           
-            
+
+MAX_LINES = 100_000
 
 class Newname:
-    """
-    Class for reading and loading Stanford Sentiment Treebank. We ignore the sentiment component of the treebank and extract just the text.
-    """
 
     def __init__(self, path=None, table_size=1000000):
-        if not path:
-            path = "D:/Test_Projects/Word2Vec"
+        # if not path:
+        #     path = "D:/Test_Projects/Word2Vec"
 
-        self.path = path
+        # self.path = path
         self.table_size = table_size
 
         self.get_sentences()
         self.get_tokens()
         # self.get_all_sentences()
-        self.dataset_split()
+        #self.dataset_split()
         self.sampleTable()
         
 
@@ -85,10 +84,14 @@ class Newname:
             return self.sentences
 
         sentences = []
-        with open(f"{self.path}/datasetest.txt", "r") as f:
-            for line in f:
-                split = line.strip().split()[0:]
-                sentences += [[w.lower() for w in split]]
+        
+        for i, example in enumerate(ds["train"]):
+            if i == MAX_LINES:
+                break
+            line = example["text"]
+            split = line.strip().split()
+            sentences.append([w.lower() for w in split])
+        
         sent_lens = np.array([len(s) for s in sentences])
         cum_sent_lens = np.cumsum(sent_lens)
 
@@ -217,3 +220,4 @@ class Newname:
 dataset = Newname()  # takes about 45sec
 tokens = dataset.tokens
 num_words = len(tokens)
+print("done!")

@@ -9,8 +9,7 @@ ds = load_dataset(
     token = token
     )
 
-ds = ds["train"].filter(lambda x: len(x["text"]) > 200)
 
-for x in ds:
-    print(x["text"][:200])
+for example in ds["train"]:
+    print(example["text"])
     break
