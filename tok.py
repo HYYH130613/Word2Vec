@@ -43,7 +43,7 @@ class Newname:
 
         self.get_sentences()
         self.get_tokens()
-        self.get_all_sentences()
+        # self.get_all_sentences()
         self.dataset_split()
         self.sampleTable()
         
@@ -111,25 +111,25 @@ class Newname:
         self.reject_prob = reject_prob
         return reject_prob
 
-    def get_all_sentences(self):
-        if hasattr(self, "all_sentences") and self.all_sentences:
-            return self.all_sentences
+    # def get_all_sentences(self):
+    #     if hasattr(self, "all_sentences") and self.all_sentences:
+    #         return self.all_sentences
 
-        sentences = self.get_sentences()
-        reject_prob = self.get_reject_prob()
-        tokens = self.get_tokens()
-        all_sentences = [
-            [
-                w
-                for w in s
-                if 0 >= reject_prob[tokens[w]]
-                or random.random() >= reject_prob[tokens[w]]
-            ]
-            for s in sentences * 30
-        ]
-        all_sentences = [s for s in all_sentences if len(s) > 1]
-        self.all_sentences = all_sentences
-        return all_sentences
+    #     sentences = self.get_sentences()
+    #     reject_prob = self.get_reject_prob()
+    #     tokens = self.get_tokens()
+    #     all_sentences = [
+    #         [
+    #             w
+    #             for w in s
+    #             if 0 >= reject_prob[tokens[w]]
+    #             or random.random() >= reject_prob[tokens[w]]
+    #         ]
+    #         for s in sentences * 30
+    #     ]
+    #     all_sentences = [s for s in all_sentences if len(s) > 1]
+    #     self.all_sentences = all_sentences
+    #     return all_sentences
 
     def get_random_context(self, C=5):
         sentences = self.get_all_sentences()
