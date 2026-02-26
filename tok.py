@@ -57,7 +57,8 @@ class Newname:
         rev_tokens = []
         idx = 0
 
-        for sent in self.sentences:
+        for sent in filter(None, self.sentences):
+            
             for w in sent:
                 word_count += 1
                 if w not in tokens:
@@ -89,6 +90,8 @@ class Newname:
             if i == MAX_LINES:
                 break
             line = example["text"]
+            if not line:
+                continue
             split = line.strip().split()
             sentences.append([w.lower() for w in split])
         
@@ -114,28 +117,30 @@ class Newname:
         self.reject_prob = reject_prob
         return reject_prob
 
-    # def get_all_sentences(self):
-    #     if hasattr(self, "all_sentences") and self.all_sentences:
-    #         return self.all_sentences
+    def get_all_sentences(self):
+        if hasattr(self, "all_sentences") and self.all_sentences:
+            return self.all_sentences
 
-    #     sentences = self.get_sentences()
-    #     reject_prob = self.get_reject_prob()
-    #     tokens = self.get_tokens()
-    #     all_sentences = [
-    #         [
-    #             w
-    #             for w in s
-    #             if 0 >= reject_prob[tokens[w]]
-    #             or random.random() >= reject_prob[tokens[w]]
-    #         ]
-    #         for s in sentences * 30
-    #     ]
-    #     all_sentences = [s for s in all_sentences if len(s) > 1]
-    #     self.all_sentences = all_sentences
-    #     return all_sentences
+        sentences = self.get_sentences()
+        reject_prob = self.get_reject_prob()
+        tokens = self.get_tokens()
+        all_sentences = [
+            [
+                w
+                for w in s
+                if 0 >= reject_prob[tokens[w]]
+                or random.random() >= reject_prob[tokens[w]]
+            ]
+            for s in sentences * 5
+        ]
+        all_sentences = [s for s in all_sentences if len(s) > 1]
+        self.all_sentences = all_sentences
+        return all_sentences
 
     def get_random_context(self, C=5):
         sentences = self.get_all_sentences()
+        if not sentences:
+            raise ValueError("Empty")
         sent_id = random.randint(0, len(sentences) - 1)
         sent = sentences[sent_id]
         word_id = random.randint(0, len(sent) - 1)
@@ -150,7 +155,7 @@ class Newname:
         if len(context) > 0:
             return center, context
         else:
-            return self.get_random_context
+            return self.get_random_context(self, C=5)
 
     def dataset_split(self):
         if hasattr(self, "split") and self.split:
@@ -221,3 +226,7 @@ dataset = Newname()  # takes about 45sec
 tokens = dataset.tokens
 num_words = len(tokens)
 print("done!")
+
+center, context = dataset.get_random_context()
+
+print(context)
