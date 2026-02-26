@@ -29,7 +29,7 @@ import os
 # filename = "datasetest.txt"
 # preparing_data(filename, path)           
 
-MAX_LINES = 100_000
+MAX_LINES = 500_000
 
 class Newname:
 
@@ -131,7 +131,7 @@ class Newname:
                 if 0 >= reject_prob[tokens[w]]
                 or random.random() >= reject_prob[tokens[w]]
             ]
-            for s in sentences * 5
+            for s in sentences
         ]
         all_sentences = [s for s in all_sentences if len(s) > 1]
         self.all_sentences = all_sentences
@@ -155,7 +155,7 @@ class Newname:
         if len(context) > 0:
             return center, context
         else:
-            return self.get_random_context(self, C=5)
+            return self.get_random_context
 
     def dataset_split(self):
         if hasattr(self, "split") and self.split:
