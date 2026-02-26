@@ -24,5 +24,5 @@ Visualization of learned embeddings using SVD (or any other dimensionality reduc
 
  - A dataset https://huggingface.co/Salesforce
 
-Acknowledgments
+# Acknowledgments
 - Original Word2Vec paper: Mikolov et al., "Efficient Estimation of Word Representations in Vector Space", 2013.
