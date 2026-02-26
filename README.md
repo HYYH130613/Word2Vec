@@ -22,7 +22,7 @@ Visualization of learned embeddings using SVD (or any other dimensionality reduc
 
  - Matplotlib (for visualization)
 
- - A dataset https://huggingface.co/Salesforce
+ - A dataset [Salesforce/Wikitext](https://huggingface.co/datasets/Salesforce/wikitext)
 
 # Acknowledgments
 - Original Word2Vec paper: Mikolov et al., "Efficient Estimation of Word Representations in Vector Space", 2013.
