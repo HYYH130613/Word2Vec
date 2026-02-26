@@ -2,7 +2,7 @@
 Overview
 Word2Vec is a popular technique for learning dense vector representations (embeddings) of words from large text corpora. The skip-gram model predicts the context words surrounding a target word, thereby capturing semantic and syntactic relationships. This project provides a clean, minimal implementation that can be easily understood and extended.
 
-Features
+# Features
 Customizable vector dimensions and context window size.
 
 Two loss functions: standard softmax (expensive) and efficient negative sampling.
@@ -15,11 +15,14 @@ Save/load model parameters during training to resume or evaluate later.
 
 Visualization of learned embeddings using SVD (or any other dimensionality reduction).
 
-Requirements
-Python 3.12+
+# Requirements
+ - Python 3.12+
 
-NumPy
+ - NumPy
 
-Matplotlib (for visualization)
+ - Matplotlib (for visualization)
 
-A dataset module named dataset_word2vec (see Dataset section below)
+ - A dataset https://huggingface.co/Salesforce
+
+Acknowledgments
+- Original Word2Vec paper: Mikolov et al., "Efficient Estimation of Word Representations in Vector Space", 2013.
