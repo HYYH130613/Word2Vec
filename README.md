@@ -26,3 +26,4 @@ Visualization of learned embeddings using SVD (or any other dimensionality reduc
 
 # Acknowledgments
 - Original Word2Vec paper: Mikolov et al., "Efficient Estimation of Word Representations in Vector Space", 2013.
+- [Word2Vec Tutorial](https://rtguides.it.tufts.edu/nlp/deep-learning/w2v-from-scratch.html#dataset)
