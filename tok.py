@@ -29,21 +29,18 @@ import os
 # filename = "datasetest.txt"
 # preparing_data(filename, path)           
 
-MAX_LINES = 500_000
+MAX_LINES = 300_000
 
 class Newname:
 
     def __init__(self, path=None, table_size=1000000):
-        # if not path:
-        #     path = "D:/Test_Projects/Word2Vec"
-
-        # self.path = path
+        
         self.table_size = table_size
 
         self.get_sentences()
         self.get_tokens()
-        # self.get_all_sentences()
-        #self.dataset_split()
+        self.get_all_sentences()
+        # self.dataset_split()
         self.sampleTable()
         
 
@@ -81,6 +78,9 @@ class Newname:
         return self.tokens
 
     def get_sentences(self):
+        
+        pattern = re.compile(r'[A-Za-z]+[\w^\']*|[\w^\']*[A-Za-z]+[\w^\']*')
+        
         if hasattr(self, "sentences") and self.sentences:
             return self.sentences
 
@@ -90,10 +90,15 @@ class Newname:
             if i == MAX_LINES:
                 break
             line = example["text"]
+            
             if not line:
                 continue
-            split = line.strip().split()
-            sentences.append([w.lower() for w in split])
+            
+            split = pattern.findall(line.lower())
+            if len(split) < 2 :
+                continue
+            
+            sentences.append([w for w in split])
         
         sent_lens = np.array([len(s) for s in sentences])
         cum_sent_lens = np.cumsum(sent_lens)
@@ -155,19 +160,19 @@ class Newname:
         if len(context) > 0:
             return center, context
         else:
-            return self.get_random_context
+            return self.get_random_context(C=5)
 
-    def dataset_split(self):
-        if hasattr(self, "split") and self.split:
-            return self.split
+    # def dataset_split(self):
+    #     if hasattr(self, "split") and self.split:
+    #         return self.split
 
-        split = [[] for _ in range(3)]
-        with open(f"{self.path}/datasetSplit.txt", "r") as f:
-            for line in f:
-                split = line.strip().split(",")
-                split[int(split[1]) - 1] += [int(split[0]) - 1]
-        self.split = split
-        return split
+    #     split = [[] for _ in range(3)]
+    #     with open(f"{self.path}/datasetSplit.txt", "r") as f:
+    #         for line in f:
+    #             split = line.strip().split(",")
+    #             split[int(split[1]) - 1] += [int(split[0]) - 1]
+    #     self.split = split
+    #     return split
 
     def sampleTable(self):
         # if hasattr(self, "sample_table") and self.sample_table:
@@ -226,7 +231,3 @@ dataset = Newname()  # takes about 45sec
 tokens = dataset.tokens
 num_words = len(tokens)
 print("done!")
-
-center, context = dataset.get_random_context()
-
-print(context)
