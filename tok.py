@@ -29,7 +29,7 @@ import os
 # filename = "datasetest.txt"
 # preparing_data(filename, path)           
 
-MAX_LINES = 300_000
+MAX_LINES = 100_000
 
 class Newname:
 
@@ -112,7 +112,7 @@ class Newname:
         if hasattr(self, "reject_prob") and self.reject_prob:
             return self.reject_prob
 
-        threshold = 1e-8 * self.word_count
+        threshold = 1e-3 * self.word_count
         reject_prob = np.zeros((len(self.tokens),))
         n_tokens = len(self.tokens)
         for i in range(n_tokens):
